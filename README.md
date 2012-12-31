@@ -1,7 +1,8 @@
 # duplex-emitter
 
-Turns a duplex stream into an event emitter.
+[![Build Status](https://secure.travis-ci.org/pgte/duplex-emitter.png)](http://travis-ci.org/pgte/duplex-emitter)
 
+Turns a duplex stream into an event emitter.
 
 ## Create
 
