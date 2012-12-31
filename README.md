@@ -1,6 +1,6 @@
 # duplex-emitter
 
-Turns a duplex streams into an event emitter.
+Turns a duplex stream into an event emitter.
 
 
 ## Create
