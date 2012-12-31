@@ -1,0 +1,27 @@
+{
+  "name": "duplex-emitter",
+  "description": "Turns a duplex stream into an event emitter",
+  "version": "0.1.0",
+  "author" : "Pedro Teixeira <pedro.teixeira@gmail.com>",
+  "contributors" : [
+    {"name": "Pedro Teixeira"}
+  ],
+ "repository" : {
+    "type" : "git",
+   "url" : "http://github.com/pgte/duplex-emitter.git"
+  },
+  "bugs" : {
+    "url" : "http://github.com/pgte/duplex-emitter/issues"
+  },
+  "engines" : ["node >= 0.8.1"],
+  "main" : "./index.js",
+  "dependencies": {
+    "event-stream": "3.0.x",
+    "emit-stream": "0.1.x",
+    "JSONStream": "0.4.x"
+  },
+  "devDependencies": {
+    "tap": "0.3.x"
+  },
+  "scripts": { "test": "node node_modules/tap/bin/tap.js tests/index.js" }
+}
