@@ -1,5 +1,5 @@
 var JSONStream = require('JSONStream');
-var eventStream = require('event-stream');
+var duplexer = require('duplexer');
 
 // Transforms a raw stream into an
 // object duplex stream
@@ -26,7 +26,7 @@ function toObjectDuplex(stream) {
 
   /// Smush together the write and read streams into
   /// one duplex stream
-  return eventStream.duplex(objectWriteStream, objectReadStream);
+  return duplexer(objectWriteStream, objectReadStream);
 }
 
 module.exports = toObjectDuplex;
