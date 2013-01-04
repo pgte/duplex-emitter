@@ -10,8 +10,11 @@ function emitter(stream) {
   var writeStream = emitStream.toStream(writeEmitter);
   writeStream.pipe(stream);
 
+  var on = readEmitter.on.bind(readEmitter);
+
   return {
-    on: readEmitter.on.bind(readEmitter),
+    on: on,
+    addListener: on,
     emit: writeEmitter.emit.bind(writeEmitter)
   };
 }
