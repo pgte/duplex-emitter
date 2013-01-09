@@ -15,6 +15,7 @@ function emitter(stream) {
   return {
     on: on,
     addListener: on,
+    once: readEmitter.once.bind(readEmitter),
     emit: writeEmitter.emit.bind(writeEmitter)
   };
 }
