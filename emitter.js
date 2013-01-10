@@ -5,9 +5,18 @@ function emitter(stream) {
   // Read events from the client
   var readEmitter = emitStream.fromStream(stream);
 
+  stream.on('error', function(err) {
+    readEmitter.emit('error', err);
+  });
+
   // Write events to the client
   var writeEmitter = new EventEmitter;
   var writeStream = emitStream.toStream(writeEmitter);
+
+  writeStream.on('error', function(err) {
+    readEmitter.emit('error', err);
+  });
+
   writeStream.pipe(stream);
 
   var on = readEmitter.on.bind(readEmitter);

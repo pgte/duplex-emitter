@@ -26,7 +26,9 @@ function toObjectDuplex(stream) {
 
   /// Smush together the write and read streams into
   /// one duplex stream
-  return duplexer(objectWriteStream, objectReadStream);
+  var duplexStream = duplexer(objectWriteStream, objectReadStream);
+  
+  return duplexStream;
 }
 
 module.exports = toObjectDuplex;
