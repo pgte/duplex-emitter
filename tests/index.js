@@ -2,6 +2,7 @@ var test = require('tap').test;
 var duplexStream = require('./duplex_stream');
 var duplexEmitter = require('..');
 var fs = require('fs');
+var Stream = require('stream');
 
 test('serializes', function(t) {
   
@@ -56,5 +57,21 @@ test('emits', function(t) {
     t.equal(b, undefined);
   });
 
+
+});
+
+test('once works', function(t) {
+  t.plan(2);
+
+  var s = new Stream();
+  s.readable = true;
+  var e = duplexEmitter(s);
+
+  e.once('AAA', function(a, b) {
+    t.equal(a, 'a');
+    t.equal(b, 'b');
+  });
+  s.emit('data', '[\n["AAA", "a", "b"]\n,\n["AAA", "c", "d"]')
+  s.emit('end');
 
 });
