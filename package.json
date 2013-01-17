@@ -1,7 +1,7 @@
 {
   "name": "duplex-emitter",
   "description": "Turns a duplex stream into an event emitter",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author" : "Pedro Teixeira <pedro.teixeira@gmail.com>",
   "contributors" : [
     {"name": "Pedro Teixeira"}
