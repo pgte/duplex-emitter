@@ -65,6 +65,9 @@ test('once works', function(t) {
 
   var s = new Stream();
   s.readable = true;
+  s.setEncoding = function(e) {
+    s._encoding = e;
+  };
   var e = duplexEmitter(s);
 
   e.once('AAA', function(a, b) {

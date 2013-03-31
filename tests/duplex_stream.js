@@ -1,11 +1,15 @@
 var Stream = require('stream');
 
-function write(b) {
-  this.emit('write', b);
+function write(d) {
+  this.emit('write', d);
 }
 
 function end() {
   this.emit('end');
+}
+
+function setEncoding(encoding) {
+  this._encoding = encoding;
 }
 
 module.exports = function() {
@@ -14,5 +18,7 @@ module.exports = function() {
   s.readable = true;
   s.write = write;
   s.end = end;
+  s.setEncoding = setEncoding;
+  
   return s;
 }

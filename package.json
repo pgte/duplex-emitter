@@ -21,7 +21,8 @@
     "JSONStream": "0.4.x"
   },
   "devDependencies": {
-    "tap": "0.3.x"
+    "tap": "0.3.x",
+    "readable-stream": "*"
   },
   "scripts": { "test": "node node_modules/tap/bin/tap.js tests/index.js" }
 }
