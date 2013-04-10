@@ -18,7 +18,7 @@
   "dependencies": {
     "duplexer": "0.0.2",
     "emit-stream": "0.1.x",
-    "JSONStream": "0.4.x"
+    "JSONStream": ">=0.6.4 && < 0.7.0"
   },
   "devDependencies": {
     "tap": "0.3.x",

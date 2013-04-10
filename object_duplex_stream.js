@@ -5,8 +5,6 @@ var duplexer = require('duplexer');
 // object duplex stream
 function toObjectDuplex(stream) {
 
-  stream.setEncoding('utf8');
-
   //// Write Stream (Server -> Client)
 
   // Create a write stream that accepts objects
