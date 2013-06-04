@@ -11,13 +11,14 @@ function emitter(stream) {
 
   // Write events to the client
   var writeEmitter = new EventEmitter;
+
   var writeStream = emitStream.toStream(writeEmitter);
+
+  writeStream.pipe(stream);
 
   writeStream.on('error', function(err) {
     readEmitter.emit('error', err);
   });
-
-  writeStream.pipe(stream);
 
   var on = readEmitter.on.bind(readEmitter);
 
