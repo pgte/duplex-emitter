@@ -1,11 +1,11 @@
-var test = require('tap').test;
+var test = require('tape');
 var duplexStream = require('./duplex_stream');
 var duplexEmitter = require('..');
 var fs = require('fs');
 var Stream = require('stream');
 
 test('serializes', function(t) {
-  
+
   t.plan(1);
 
   var s = duplexStream();
