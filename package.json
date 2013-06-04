@@ -36,7 +36,7 @@
     ]
   },
   "testling" : {
-    "files" : ["tests/index.js"],
+    "scripts" : ["tests/bundle.js"],
     "browsers" : [
       "chrome/25"
     ]
