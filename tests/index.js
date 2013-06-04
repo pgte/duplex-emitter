@@ -1,8 +1,9 @@
 var test = require('tape');
 var duplexStream = require('./duplex_stream');
-var duplexEmitter = require('..');
+var duplexEmitter = require('../');
 var fs = require('fs');
 var Stream = require('stream');
+var fixtures = require('./fixtures');
 
 test('serializes', function(t) {
 
@@ -20,7 +21,7 @@ test('serializes', function(t) {
   e.emit('justone', 1);
 
   t.equal(
-    fs.readFileSync(__dirname + '/fixtures.json', 'utf8'),
+    fixtures,
     collected.join(''));
 });
 
@@ -31,10 +32,18 @@ test('emits', function(t) {
   var s = duplexStream();
   var e = duplexEmitter(s);
 
-  var read = fs.createReadStream(__dirname + '/fixtures.json', {encoding: 'utf8'});
-  read.on('data', function(d) {
-    s.emit('data', d);
-  });
+  var chunks = fixtures.match(/.{1,2}/g);
+
+  function schedule() {
+    setTimeout(function() {
+      var chunk = chunks.shift();
+      if (chunk) {
+        s.emit('data', chunk);
+        schedule();
+      }
+    }, 0)
+  }
+  schedule();
 
   e.on('abc', function(a, b, c) {
     t.equal(a, 'def');
