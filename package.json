@@ -25,7 +25,7 @@
   },
   "scripts": { "test": "tape tests/index.js" },
   "testling" : {
-    "files" : "tests/index.js",
+    "files" : ["tests/index.js"],
     "browsers" : [
       "ie/6..latest",
       "chrome/20..latest",
@@ -36,7 +36,7 @@
     ]
   },
   "testling" : {
-    "files" : "tests/index.js",
+    "files" : ["tests/index.js"],
     "browsers" : [
       "chrome/25"
     ]
