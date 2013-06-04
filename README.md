@@ -2,6 +2,9 @@
 
 [![Build Status](https://secure.travis-ci.org/pgte/duplex-emitter.png)](http://travis-ci.org/pgte/duplex-emitter)
 
+[![browser support](https://ci.testling.com/pgte/duplex-emitter.png)](https://ci.testling.com/pgte/duplex-emitter)
+
+
 Turns a duplex stream into an event emitter.
 
 ## Create
