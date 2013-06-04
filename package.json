@@ -35,5 +35,12 @@
       "opera/11.0..latest",
       "iphone/6", "ipad/6"
     ]
+  },
+  "testling" : {
+    "files" : "tests/index.js",
+    "browsers" : [
+      "chrome/25"
+    ]
   }
+
 }
