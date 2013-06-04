@@ -21,8 +21,7 @@
     "JSONStream": ">=0.6.4 && < 0.7.0"
   },
   "devDependencies": {
-    "tape": "*",
-    "readable-stream": "*"
+    "tape": "*"
   },
   "scripts": { "test": "tape tests/index.js" },
   "testling" : {
