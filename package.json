@@ -24,7 +24,7 @@
     "tape": "*",
     "readable-stream": "*"
   },
-  "scripts": { "test": "node node_modules/tap/bin/tap.js tests/index.js" },
+  "scripts": { "test": "tape tests/index.js" },
   "testling": {
     "files": "tests/index.js",
     "browsers": {
