@@ -25,7 +25,7 @@
   },
   "scripts": { "test": "tape tests/index.js" },
   "testling" : {
-    "files" : ["tests/index.js"],
+    "scripts" : ["tests/bundle.js"],
     "browsers" : [
       "ie/6..latest",
       "chrome/20..latest",
@@ -33,12 +33,6 @@
       "safari/latest",
       "opera/11.0..latest",
       "iphone/6", "ipad/6"
-    ]
-  },
-  "testling" : {
-    "scripts" : ["tests/bundle.js"],
-    "browsers" : [
-      "chrome/25"
     ]
   }
 
