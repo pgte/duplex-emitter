@@ -1,3 +1,3 @@
 #!/bin/bash
 
-browserify tests/index.js > tests/bundle.js
+browserify tests/index.js > tests/utils/bundle.js
