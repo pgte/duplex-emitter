@@ -25,7 +25,7 @@
   },
   "scripts": { "test": "tape tests/*.js" },
   "testling" : {
-    "files" : "tests/*.js",
+    "scripts" : "tests/utils/bundle.js",
     "browsers" : [
       "ie/6..latest",
       "chrome/14..latest",

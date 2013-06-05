@@ -1,3 +1,3 @@
 #!/bin/bash
 
-browserify tests/index.js > tests/utils/bundle.js
+browserify tests/duplex-emitter.js > tests/utils/bundle.js

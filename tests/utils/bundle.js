@@ -123,6 +123,41 @@ Stream.prototype.pipe = function(dest, options) {
 };
 
 },{"events":3,"util":4}],5:[function(require,module,exports){
+var Stream = require('stream');
+
+function write(d) {
+  this.emit('write', d);
+}
+
+function end() {
+  this.emit('end');
+}
+
+function setEncoding(encoding) {
+  this._encoding = encoding;
+}
+
+module.exports = function() {
+  var s = new Stream();
+  s.writable = true;
+  s.readable = true;
+  s.write = write;
+  s.end = end;
+  s.setEncoding = setEncoding;
+  
+  return s;
+}
+},{"stream":2}],6:[function(require,module,exports){
+module.exports =
+'[\n\
+["abc","def","ghi"]\n\
+,\n\
+["def","ghi","jkl"]\n\
+,\n\
+["noargs"]\n\
+,\n\
+["justone",1]';
+},{}],7:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -362,7 +397,7 @@ EventEmitter.prototype.listeners = function(type) {
 };
 
 })(require("__browserify_process"))
-},{"__browserify_process":5}],4:[function(require,module,exports){
+},{"__browserify_process":7}],4:[function(require,module,exports){
 var events = require('events');
 
 exports.isArray = isArray;
@@ -715,48 +750,13 @@ exports.format = function(f) {
   return str;
 };
 
-},{"events":3}],6:[function(require,module,exports){
-module.exports =
-'[\n\
-["abc","def","ghi"]\n\
-,\n\
-["def","ghi","jkl"]\n\
-,\n\
-["noargs"]\n\
-,\n\
-["justone",1]';
-},{}],7:[function(require,module,exports){
-var Stream = require('stream');
-
-function write(d) {
-  this.emit('write', d);
-}
-
-function end() {
-  this.emit('end');
-}
-
-function setEncoding(encoding) {
-  this._encoding = encoding;
-}
-
-module.exports = function() {
-  var s = new Stream();
-  s.writable = true;
-  s.readable = true;
-  s.write = write;
-  s.end = end;
-  s.setEncoding = setEncoding;
-  
-  return s;
-}
-},{"stream":2}],8:[function(require,module,exports){
+},{"events":3}],8:[function(require,module,exports){
 var test = require('tape');
-var duplexStream = require('./duplex_stream');
+var duplexStream = require('./utils/duplex_stream');
 var duplexEmitter = require('../');
 var fs = require('fs');
 var Stream = require('stream');
-var fixtures = require('./fixtures');
+var fixtures = require('./utils/fixtures');
 
 test('serializes', function(t) {
 
@@ -840,7 +840,7 @@ test('once works', function(t) {
   s.emit('end');
 
 });
-},{"fs":1,"stream":2,"./duplex_stream":7,"./fixtures":6,"../":9,"tape":10}],9:[function(require,module,exports){
+},{"fs":1,"stream":2,"./utils/duplex_stream":5,"./utils/fixtures":6,"../":9,"tape":10}],9:[function(require,module,exports){
 var objectDuplexStream = require('./object_duplex_stream');
 var emitter = require('./emitter');
 
@@ -966,7 +966,7 @@ function createHarness (conf_) {
 }
 
 })(require("__browserify_process"))
-},{"./lib/default_stream":13,"./lib/test":14,"./lib/results":15,"__browserify_process":5}],13:[function(require,module,exports){
+},{"./lib/default_stream":13,"./lib/test":14,"./lib/results":15,"__browserify_process":7}],13:[function(require,module,exports){
 var Stream = require('stream');
 
 module.exports = function () {
@@ -998,79 +998,7 @@ module.exports = function () {
     return out;
 };
 
-},{"stream":2}],11:[function(require,module,exports){
-var JSONStream = require('JSONStream');
-var duplexer = require('duplexer');
-
-// Transforms a raw stream into an
-// object duplex stream
-function toObjectDuplex(stream) {
-
-  //// Write Stream (Server -> Client)
-
-  // Create a write stream that accepts objects
-  // and spits out JSON, newline separated
-  var objectWriteStream = JSONStream.stringify();
-
-  // Pipe the stream to the client
-  objectWriteStream.pipe(stream);
-
-
-  //// Read Stream (Client -> Server)
-
-  // Create a read stream that parses JSON
-  // and spits out objects
-  var objectReadStream = JSONStream.parse([true]);
-
-  // Pipe the client raw data into the json parser
-  stream.pipe(objectReadStream);
-
-  /// Smush together the write and read streams into
-  /// one duplex stream
-  var duplexStream = duplexer(objectWriteStream, objectReadStream);
-  
-  return duplexStream;
-}
-
-module.exports = toObjectDuplex;
-},{"JSONStream":16,"duplexer":17}],12:[function(require,module,exports){
-var EventEmitter = require('events').EventEmitter;
-var emitStream = require('emit-stream');
-
-function emitter(stream) {
-  // Read events from the client
-  var readEmitter = emitStream.fromStream(stream);
-
-  stream.on('error', function(err) {
-    readEmitter.emit('error', err);
-  });
-
-  // Write events to the client
-  var writeEmitter = new EventEmitter;
-
-  var writeStream = emitStream.toStream(writeEmitter);
-
-  writeStream.pipe(stream);
-
-  writeStream.on('error', function(err) {
-    readEmitter.emit('error', err);
-  });
-
-  var on = readEmitter.on.bind(readEmitter);
-
-  return {
-    on: on,
-    addListener: on,
-    once: readEmitter.once.bind(readEmitter),
-    removeListener: readEmitter.removeListener.bind(readEmitter),
-    emit: writeEmitter.emit.bind(writeEmitter),
-    writeEmitter: writeEmitter,
-    readEmitter: readEmitter
-  };
-}
-
-module.exports = emitter;
-},{"events":3,"emit-stream":18}],19:[function(require,module,exports){
+},{"stream":2}],16:[function(require,module,exports){
 (function(process){function filter (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
@@ -1248,7 +1176,79 @@ exports.relative = function(from, to) {
 };
 
 })(require("__browserify_process"))
-},{"__browserify_process":5}],17:[function(require,module,exports){
+},{"__browserify_process":7}],12:[function(require,module,exports){
+var EventEmitter = require('events').EventEmitter;
+var emitStream = require('emit-stream');
+
+function emitter(stream) {
+  // Read events from the client
+  var readEmitter = emitStream.fromStream(stream);
+
+  stream.on('error', function(err) {
+    readEmitter.emit('error', err);
+  });
+
+  // Write events to the client
+  var writeEmitter = new EventEmitter;
+
+  var writeStream = emitStream.toStream(writeEmitter);
+
+  writeStream.pipe(stream);
+
+  writeStream.on('error', function(err) {
+    readEmitter.emit('error', err);
+  });
+
+  var on = readEmitter.on.bind(readEmitter);
+
+  return {
+    on: on,
+    addListener: on,
+    once: readEmitter.once.bind(readEmitter),
+    removeListener: readEmitter.removeListener.bind(readEmitter),
+    emit: writeEmitter.emit.bind(writeEmitter),
+    writeEmitter: writeEmitter,
+    readEmitter: readEmitter
+  };
+}
+
+module.exports = emitter;
+},{"events":3,"emit-stream":17}],11:[function(require,module,exports){
+var JSONStream = require('JSONStream');
+var duplexer = require('duplexer');
+
+// Transforms a raw stream into an
+// object duplex stream
+function toObjectDuplex(stream) {
+
+  //// Write Stream (Server -> Client)
+
+  // Create a write stream that accepts objects
+  // and spits out JSON, newline separated
+  var objectWriteStream = JSONStream.stringify();
+
+  // Pipe the stream to the client
+  objectWriteStream.pipe(stream);
+
+
+  //// Read Stream (Client -> Server)
+
+  // Create a read stream that parses JSON
+  // and spits out objects
+  var objectReadStream = JSONStream.parse([true]);
+
+  // Pipe the client raw data into the json parser
+  stream.pipe(objectReadStream);
+
+  /// Smush together the write and read streams into
+  /// one duplex stream
+  var duplexStream = duplexer(objectWriteStream, objectReadStream);
+  
+  return duplexStream;
+}
+
+module.exports = toObjectDuplex;
+},{"JSONStream":18,"duplexer":19}],19:[function(require,module,exports){
 var Stream = require("stream")
     , writeMethods = ["write", "end", "destroy"]
     , readMethods = ["resume", "pause"]
@@ -1703,7 +1703,7 @@ Test.prototype.doesNotThrow = function (fn, expected, msg, extra) {
 // vim: set softtabstop=4 shiftwidth=4:
 
 })(require("__browserify_process"),"/../node_modules/tape/lib")
-},{"stream":2,"path":19,"util":4,"events":3,"defined":20,"deep-equal":21,"__browserify_process":5}],15:[function(require,module,exports){
+},{"stream":2,"path":16,"util":4,"events":3,"deep-equal":20,"defined":21,"__browserify_process":7}],15:[function(require,module,exports){
 (function(process){var Stream = require('stream');
 var json = typeof JSON === 'object' ? JSON : require('jsonify');
 var through = require('through');
@@ -1899,7 +1899,262 @@ function getSerialize () {
 }
 
 })(require("__browserify_process"))
-},{"stream":2,"jsonify":22,"through":23,"__browserify_process":5}],24:[function(require,module,exports){
+},{"stream":2,"through":22,"jsonify":23,"__browserify_process":7}],20:[function(require,module,exports){
+var pSlice = Array.prototype.slice;
+var Object_keys = typeof Object.keys === 'function'
+    ? Object.keys
+    : function (obj) {
+        var keys = [];
+        for (var key in obj) keys.push(key);
+        return keys;
+    }
+;
+
+var deepEqual = module.exports = function (actual, expected) {
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (actual === expected) {
+    return true;
+
+  } else if (actual instanceof Date && expected instanceof Date) {
+    return actual.getTime() === expected.getTime();
+
+  // 7.3. Other pairs that do not both pass typeof value == 'object',
+  // equivalence is determined by ==.
+  } else if (typeof actual != 'object' && typeof expected != 'object') {
+    return actual == expected;
+
+  // 7.4. For all other Object pairs, including Array objects, equivalence is
+  // determined by having the same number of owned properties (as verified
+  // with Object.prototype.hasOwnProperty.call), the same set of keys
+  // (although not necessarily the same order), equivalent values for every
+  // corresponding key, and an identical 'prototype' property. Note: this
+  // accounts for both named and indexed properties on Arrays.
+  } else {
+    return objEquiv(actual, expected);
+  }
+}
+
+function isUndefinedOrNull(value) {
+  return value === null || value === undefined;
+}
+
+function isArguments(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+}
+
+function objEquiv(a, b) {
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
+    return false;
+  // an identical 'prototype' property.
+  if (a.prototype !== b.prototype) return false;
+  //~~~I've managed to break Object.keys through screwy arguments passing.
+  //   Converting to array solves the problem.
+  if (isArguments(a)) {
+    if (!isArguments(b)) {
+      return false;
+    }
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return deepEqual(a, b);
+  }
+  try {
+    var ka = Object_keys(a),
+        kb = Object_keys(b),
+        key, i;
+  } catch (e) {//happens when one is a string literal and the other isn't
+    return false;
+  }
+  // having the same number of owned properties (keys incorporates
+  // hasOwnProperty)
+  if (ka.length != kb.length)
+    return false;
+  //the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  //~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i])
+      return false;
+  }
+  //equivalent values for every corresponding key, and
+  //~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!deepEqual(a[key], b[key])) return false;
+  }
+  return true;
+}
+
+},{}],21:[function(require,module,exports){
+module.exports = function () {
+    for (var i = 0; i < arguments.length; i++) {
+        if (arguments[i] !== undefined) return arguments[i];
+    }
+};
+
+},{}],22:[function(require,module,exports){
+(function(process){var Stream = require('stream')
+
+// through
+//
+// a stream that does nothing but re-emit the input.
+// useful for aggregating a series of changing but not ending streams into one stream)
+
+exports = module.exports = through
+through.through = through
+
+//create a readable writable stream.
+
+function through (write, end, opts) {
+  write = write || function (data) { this.queue(data) }
+  end = end || function () { this.queue(null) }
+
+  var ended = false, destroyed = false, buffer = [], _ended = false
+  var stream = new Stream()
+  stream.readable = stream.writable = true
+  stream.paused = false
+
+//  stream.autoPause   = !(opts && opts.autoPause   === false)
+  stream.autoDestroy = !(opts && opts.autoDestroy === false)
+
+  stream.write = function (data) {
+    write.call(this, data)
+    return !stream.paused
+  }
+
+  function drain() {
+    while(buffer.length && !stream.paused) {
+      var data = buffer.shift()
+      if(null === data)
+        return stream.emit('end')
+      else
+        stream.emit('data', data)
+    }
+  }
+
+  stream.queue = stream.push = function (data) {
+//    console.error(ended)
+    if(_ended) return stream
+    if(data == null) _ended = true
+    buffer.push(data)
+    drain()
+    return stream
+  }
+
+  //this will be registered as the first 'end' listener
+  //must call destroy next tick, to make sure we're after any
+  //stream piped from here.
+  //this is only a problem if end is not emitted synchronously.
+  //a nicer way to do this is to make sure this is the last listener for 'end'
+
+  stream.on('end', function () {
+    stream.readable = false
+    if(!stream.writable && stream.autoDestroy)
+      process.nextTick(function () {
+        stream.destroy()
+      })
+  })
+
+  function _end () {
+    stream.writable = false
+    end.call(stream)
+    if(!stream.readable && stream.autoDestroy)
+      stream.destroy()
+  }
+
+  stream.end = function (data) {
+    if(ended) return
+    ended = true
+    if(arguments.length) stream.write(data)
+    _end() // will emit or queue
+    return stream
+  }
+
+  stream.destroy = function () {
+    if(destroyed) return
+    destroyed = true
+    ended = true
+    buffer.length = 0
+    stream.writable = stream.readable = false
+    stream.emit('close')
+    return stream
+  }
+
+  stream.pause = function () {
+    if(stream.paused) return
+    stream.paused = true
+    return stream
+  }
+
+  stream.resume = function () {
+    if(stream.paused) {
+      stream.paused = false
+      stream.emit('resume')
+    }
+    drain()
+    //may have become paused again,
+    //as drain emits 'data'.
+    if(!stream.paused)
+      stream.emit('drain')
+    return stream
+  }
+  return stream
+}
+
+
+})(require("__browserify_process"))
+},{"stream":2,"__browserify_process":7}],17:[function(require,module,exports){
+var EventEmitter = require('events').EventEmitter;
+var through = require('through');
+
+exports = module.exports = function (ev) {
+    if (typeof ev.pipe === 'function') {
+        return exports.fromStream(ev);
+    }
+    else return exports.toStream(ev)
+};
+
+exports.toStream = function (ev) {
+    var s = through(
+        function write (args) {
+            this.emit('data', args);
+        },
+        function end () {
+            var ix = ev._emitStreams.indexOf(s);
+            ev._emitStreams.splice(ix, 1);
+        }
+    );
+    
+    if (!ev._emitStreams) {
+        ev._emitStreams = [];
+        
+        var emit = ev.emit;
+        ev.emit = function () {
+            if (s.writable) {
+                var args = [].slice.call(arguments);
+                ev._emitStreams.forEach(function (es) {
+                    es.write(args);
+                });
+            }
+            emit.apply(ev, arguments);
+        };
+    }
+    ev._emitStreams.push(s);
+    
+    return s;
+};
+
+exports.fromStream = function (s) {
+    var ev = new EventEmitter;
+    
+    s.pipe(through(function (args) {
+        ev.emit.apply(ev, args);
+    }));
+    
+    return ev;
+};
+
+},{"events":3,"through":24}],25:[function(require,module,exports){
 require=(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){
 exports.readIEEE754 = function(buffer, offset, isBE, mLen, nBytes) {
   var e, m,
@@ -5764,7 +6019,7 @@ SlowBuffer.prototype.writeDoubleBE = Buffer.prototype.writeDoubleBE;
 },{}]},{},[])
 ;;module.exports=require("buffer-browserify")
 
-},{}],16:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 (function(process,Buffer){var Parser = require('jsonparse')
   , Stream = require('stream').Stream
   , through = require('through')
@@ -5947,65 +6202,7 @@ exports.stringifyObject = function (op, sep, cl) {
 }
 
 })(require("__browserify_process"),require("__browserify_buffer").Buffer)
-},{"stream":2,"jsonparse":25,"through":26,"__browserify_process":5,"__browserify_buffer":24}],18:[function(require,module,exports){
-var EventEmitter = require('events').EventEmitter;
-var through = require('through');
-
-exports = module.exports = function (ev) {
-    if (typeof ev.pipe === 'function') {
-        return exports.fromStream(ev);
-    }
-    else return exports.toStream(ev)
-};
-
-exports.toStream = function (ev) {
-    var s = through(
-        function write (args) {
-            this.emit('data', args);
-        },
-        function end () {
-            var ix = ev._emitStreams.indexOf(s);
-            ev._emitStreams.splice(ix, 1);
-        }
-    );
-    
-    if (!ev._emitStreams) {
-        ev._emitStreams = [];
-        
-        var emit = ev.emit;
-        ev.emit = function () {
-            if (s.writable) {
-                var args = [].slice.call(arguments);
-                ev._emitStreams.forEach(function (es) {
-                    es.write(args);
-                });
-            }
-            emit.apply(ev, arguments);
-        };
-    }
-    ev._emitStreams.push(s);
-    
-    return s;
-};
-
-exports.fromStream = function (s) {
-    var ev = new EventEmitter;
-    
-    s.pipe(through(function (args) {
-        ev.emit.apply(ev, args);
-    }));
-    
-    return ev;
-};
-
-},{"events":3,"through":27}],20:[function(require,module,exports){
-module.exports = function () {
-    for (var i = 0; i < arguments.length; i++) {
-        if (arguments[i] !== undefined) return arguments[i];
-    }
-};
-
-},{}],23:[function(require,module,exports){
+},{"stream":2,"jsonparse":26,"through":27,"__browserify_process":7,"__browserify_buffer":25}],24:[function(require,module,exports){
 (function(process){var Stream = require('stream')
 
 // through
@@ -6018,191 +6215,64 @@ through.through = through
 
 //create a readable writable stream.
 
-function through (write, end, opts) {
-  write = write || function (data) { this.queue(data) }
-  end = end || function () { this.queue(null) }
+function through (write, end) {
+  write = write || function (data) { this.emit('data', data) }
+  end = end || function () { this.emit('end') }
 
-  var ended = false, destroyed = false, buffer = [], _ended = false
+  var ended = false, destroyed = false
   var stream = new Stream()
   stream.readable = stream.writable = true
-  stream.paused = false
-
-//  stream.autoPause   = !(opts && opts.autoPause   === false)
-  stream.autoDestroy = !(opts && opts.autoDestroy === false)
-
+  stream.paused = false  
   stream.write = function (data) {
     write.call(this, data)
     return !stream.paused
   }
-
-  function drain() {
-    while(buffer.length && !stream.paused) {
-      var data = buffer.shift()
-      if(null === data)
-        return stream.emit('end')
-      else
-        stream.emit('data', data)
-    }
-  }
-
-  stream.queue = stream.push = function (data) {
-//    console.error(ended)
-    if(_ended) return stream
-    if(data == null) _ended = true
-    buffer.push(data)
-    drain()
-    return stream
-  }
-
   //this will be registered as the first 'end' listener
   //must call destroy next tick, to make sure we're after any
-  //stream piped from here.
-  //this is only a problem if end is not emitted synchronously.
-  //a nicer way to do this is to make sure this is the last listener for 'end'
-
+  //stream piped from here. 
   stream.on('end', function () {
     stream.readable = false
-    if(!stream.writable && stream.autoDestroy)
+    if(!stream.writable)
       process.nextTick(function () {
         stream.destroy()
       })
   })
 
-  function _end () {
-    stream.writable = false
-    end.call(stream)
-    if(!stream.readable && stream.autoDestroy)
-      stream.destroy()
-  }
-
   stream.end = function (data) {
-    if(ended) return
+    if(ended) return 
+    //this breaks, because pipe doesn't check writable before calling end.
+    //throw new Error('cannot call end twice')
     ended = true
     if(arguments.length) stream.write(data)
-    _end() // will emit or queue
-    return stream
+    this.writable = false
+    end.call(this)
+    if(!this.readable)
+      this.destroy()
   }
-
   stream.destroy = function () {
     if(destroyed) return
     destroyed = true
     ended = true
-    buffer.length = 0
     stream.writable = stream.readable = false
     stream.emit('close')
-    return stream
   }
-
   stream.pause = function () {
     if(stream.paused) return
     stream.paused = true
-    return stream
+    stream.emit('pause')
   }
-
   stream.resume = function () {
     if(stream.paused) {
       stream.paused = false
-      stream.emit('resume')
-    }
-    drain()
-    //may have become paused again,
-    //as drain emits 'data'.
-    if(!stream.paused)
       stream.emit('drain')
-    return stream
+    }
   }
   return stream
 }
 
 
 })(require("__browserify_process"))
-},{"stream":2,"__browserify_process":5}],21:[function(require,module,exports){
-var pSlice = Array.prototype.slice;
-var Object_keys = typeof Object.keys === 'function'
-    ? Object.keys
-    : function (obj) {
-        var keys = [];
-        for (var key in obj) keys.push(key);
-        return keys;
-    }
-;
-
-var deepEqual = module.exports = function (actual, expected) {
-  // 7.1. All identical values are equivalent, as determined by ===.
-  if (actual === expected) {
-    return true;
-
-  } else if (actual instanceof Date && expected instanceof Date) {
-    return actual.getTime() === expected.getTime();
-
-  // 7.3. Other pairs that do not both pass typeof value == 'object',
-  // equivalence is determined by ==.
-  } else if (typeof actual != 'object' && typeof expected != 'object') {
-    return actual == expected;
-
-  // 7.4. For all other Object pairs, including Array objects, equivalence is
-  // determined by having the same number of owned properties (as verified
-  // with Object.prototype.hasOwnProperty.call), the same set of keys
-  // (although not necessarily the same order), equivalent values for every
-  // corresponding key, and an identical 'prototype' property. Note: this
-  // accounts for both named and indexed properties on Arrays.
-  } else {
-    return objEquiv(actual, expected);
-  }
-}
-
-function isUndefinedOrNull(value) {
-  return value === null || value === undefined;
-}
-
-function isArguments(object) {
-  return Object.prototype.toString.call(object) == '[object Arguments]';
-}
-
-function objEquiv(a, b) {
-  if (isUndefinedOrNull(a) || isUndefinedOrNull(b))
-    return false;
-  // an identical 'prototype' property.
-  if (a.prototype !== b.prototype) return false;
-  //~~~I've managed to break Object.keys through screwy arguments passing.
-  //   Converting to array solves the problem.
-  if (isArguments(a)) {
-    if (!isArguments(b)) {
-      return false;
-    }
-    a = pSlice.call(a);
-    b = pSlice.call(b);
-    return deepEqual(a, b);
-  }
-  try {
-    var ka = Object_keys(a),
-        kb = Object_keys(b),
-        key, i;
-  } catch (e) {//happens when one is a string literal and the other isn't
-    return false;
-  }
-  // having the same number of owned properties (keys incorporates
-  // hasOwnProperty)
-  if (ka.length != kb.length)
-    return false;
-  //the same set of keys (although not necessarily the same order),
-  ka.sort();
-  kb.sort();
-  //~~~cheap key test
-  for (i = ka.length - 1; i >= 0; i--) {
-    if (ka[i] != kb[i])
-      return false;
-  }
-  //equivalent values for every corresponding key, and
-  //~~~possibly expensive deep test
-  for (i = ka.length - 1; i >= 0; i--) {
-    key = ka[i];
-    if (!deepEqual(a[key], b[key])) return false;
-  }
-  return true;
-}
-
-},{}],25:[function(require,module,exports){
+},{"stream":2,"__browserify_process":7}],26:[function(require,module,exports){
 (function(Buffer){/*global Buffer*/
 // Named constants with unique integer values
 var C = {};
@@ -6606,7 +6676,7 @@ proto.onToken = function (token, value) {
 module.exports = Parser;
 
 })(require("__browserify_buffer").Buffer)
-},{"__browserify_buffer":24}],26:[function(require,module,exports){
+},{"__browserify_buffer":25}],27:[function(require,module,exports){
 (function(process){var Stream = require('stream')
 
 // through
@@ -6712,77 +6782,7 @@ function through (write, end) {
 
 
 })(require("__browserify_process"))
-},{"stream":2,"__browserify_process":5}],27:[function(require,module,exports){
-(function(process){var Stream = require('stream')
-
-// through
-//
-// a stream that does nothing but re-emit the input.
-// useful for aggregating a series of changing but not ending streams into one stream)
-
-exports = module.exports = through
-through.through = through
-
-//create a readable writable stream.
-
-function through (write, end) {
-  write = write || function (data) { this.emit('data', data) }
-  end = end || function () { this.emit('end') }
-
-  var ended = false, destroyed = false
-  var stream = new Stream()
-  stream.readable = stream.writable = true
-  stream.paused = false  
-  stream.write = function (data) {
-    write.call(this, data)
-    return !stream.paused
-  }
-  //this will be registered as the first 'end' listener
-  //must call destroy next tick, to make sure we're after any
-  //stream piped from here. 
-  stream.on('end', function () {
-    stream.readable = false
-    if(!stream.writable)
-      process.nextTick(function () {
-        stream.destroy()
-      })
-  })
-
-  stream.end = function (data) {
-    if(ended) return 
-    //this breaks, because pipe doesn't check writable before calling end.
-    //throw new Error('cannot call end twice')
-    ended = true
-    if(arguments.length) stream.write(data)
-    this.writable = false
-    end.call(this)
-    if(!this.readable)
-      this.destroy()
-  }
-  stream.destroy = function () {
-    if(destroyed) return
-    destroyed = true
-    ended = true
-    stream.writable = stream.readable = false
-    stream.emit('close')
-  }
-  stream.pause = function () {
-    if(stream.paused) return
-    stream.paused = true
-    stream.emit('pause')
-  }
-  stream.resume = function () {
-    if(stream.paused) {
-      stream.paused = false
-      stream.emit('drain')
-    }
-  }
-  return stream
-}
-
-
-})(require("__browserify_process"))
-},{"stream":2,"__browserify_process":5}],22:[function(require,module,exports){
+},{"stream":2,"__browserify_process":7}],23:[function(require,module,exports){
 exports.parse = require('./lib/parse');
 exports.stringify = require('./lib/stringify');
 
