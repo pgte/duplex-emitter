@@ -23,9 +23,9 @@
   "devDependencies": {
     "tape": "*"
   },
-  "scripts": { "test": "tape tests/index.js" },
+  "scripts": { "test": "tape tests/*.js" },
   "testling" : {
-    "scripts" : ["tests/bundle.js"],
+    "files" : "tests/*.js",
     "browsers" : [
       "ie/6..latest",
       "chrome/14..latest",

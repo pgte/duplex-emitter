@@ -1,9 +1,9 @@
 var test = require('tape');
-var duplexStream = require('./duplex_stream');
+var duplexStream = require('./utils/duplex_stream');
 var duplexEmitter = require('../');
 var fs = require('fs');
 var Stream = require('stream');
-var fixtures = require('./fixtures');
+var fixtures = require('./utils/fixtures');
 
 test('serializes', function(t) {
 
