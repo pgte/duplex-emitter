@@ -25,7 +25,7 @@
   },
   "scripts": { "test": "tape tests/*.js" },
   "testling" : {
-    "scripts" : "tests/utils/bundle.js",
+    "files" : "tests/duplex-emitter.js",
     "browsers" : [
       "ie/6..latest",
       "chrome/14..latest",
