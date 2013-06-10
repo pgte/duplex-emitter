@@ -21,8 +21,8 @@ test('serializes', function(t) {
   e.emit('justone', 1);
 
   t.equal(
-    fixtures,
-    collected.join(''));
+    collected.join(''),
+    fixtures);
 });
 
 test('emits', function(t) {
@@ -83,7 +83,7 @@ test('once works', function(t) {
     t.equal(a, 'a');
     t.equal(b, 'b');
   });
-  s.emit('data', '[\n["AAA", "a", "b"]\n,\n["AAA", "c", "d"]')
+  s.emit('data', '["AAA", "a", "b"]\n["AAA", "c", "d"]')
   s.emit('end');
 
 });
