@@ -1,18 +1,20 @@
 {
   "name": "duplex-emitter",
   "description": "Turns a duplex stream into an event emitter",
-  "version": "0.1.11",
+  "version": "0.2.0",
   "author" : "Pedro Teixeira <pedro.teixeira@gmail.com>",
   "contributors" : [
-    {"name": "Pedro Teixeira"}
+    {"name": "Pedro Teixeira"},
+    {"name": "Igor Soarez"}
   ],
- "repository" : {
+  "repository" : {
     "type" : "git",
    "url" : "http://github.com/pgte/duplex-emitter.git"
   },
   "bugs" : {
     "url" : "http://github.com/pgte/duplex-emitter/issues"
   },
+  "tags": ["duplex", "stream", "event emitter", "remote emitter"],
   "engines" : ["node >= 0.8.1"],
   "main" : "./index.js",
   "dependencies": {
