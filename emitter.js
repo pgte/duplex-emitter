@@ -27,6 +27,7 @@ function emitter(stream) {
     addListener: on,
     once: readEmitter.once.bind(readEmitter),
     removeListener: readEmitter.removeListener.bind(readEmitter),
+    removeAllListeners: readEmitter.removeAllListeners.bind(readEmitter),
     emit: writeEmitter.emit.bind(writeEmitter),
     writeEmitter: writeEmitter,
     readEmitter: readEmitter
