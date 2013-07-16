@@ -1,41 +1,33 @@
 {
   "name": "duplex-emitter",
-  "description": "Turns a duplex stream into an event emitter",
-  "version": "0.2.1",
-  "author" : "Pedro Teixeira <pedro.teixeira@gmail.com>",
-  "contributors" : [
-    {"name": "Pedro Teixeira"},
-    {"name": "Igor Soarez"}
+  "version": "2.0.0",
+  "description": "Duplex Event Emitter",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap tests/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pgte/duplex-emitter.git"
+  },
+  "keywords": [
+    "event",
+    "emitter",
+    "stream",
+    "duplex",
+    "remote"
   ],
-  "repository" : {
-    "type" : "git",
-   "url" : "http://github.com/pgte/duplex-emitter.git"
+  "author": "pgte",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pgte/duplex-emitter/issues"
   },
-  "bugs" : {
-    "url" : "http://github.com/pgte/duplex-emitter/issues"
-  },
-  "tags": ["duplex", "stream", "event emitter", "remote emitter"],
-  "engines" : ["node >= 0.8.1"],
-  "main" : "./index.js",
   "dependencies": {
-    "duplexer": "0.0.2",
-    "emit-stream": "0.1.x",
-    "JSONStream": ">=0.6.4 && < 0.7.0"
+    "stream-combiner": "0.0.2",
+    "split": "~0.2.6",
+    "through": "~2.3.4"
   },
   "devDependencies": {
-    "tape": "*"
-  },
-  "scripts": { "test": "tape tests/*.js" },
-  "testling" : {
-    "files" : "tests/duplex-emitter.js",
-    "browsers" : [
-      "ie/6..latest",
-      "chrome/14..latest",
-      "firefox/10..latest",
-      "safari/5.0.5..latest",
-      "opera/11.0..latest",
-      "iphone/6", "ipad/6"
-    ]
+    "tap": "*"
   }
-
 }
