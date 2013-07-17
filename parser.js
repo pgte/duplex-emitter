@@ -9,13 +9,15 @@ function createParser() {
   return s;
 
   function parseJSON(d) {
-    try {
-      d = JSON.parse(d)
-    } catch(err) {
-      s.emit('error', err);
-      return;
+    if (d) {
+      try {
+        d = JSON.parse(d)
+      } catch(err) {
+        s.emit('error', err);
+        return;
+      }
+      this.queue(d);
     }
-    this.queue(d);
   }
 };
 
