@@ -49,8 +49,8 @@ function removeListener(event, listener) {
 /// removeAllListeners
 
 DuplexEmitter.prototype.removeAllListeners =
-function removeAllListeners(event, listener) {
-  return this.read.removeAllListeners(event);
+function removeAllListeners() {
+  return this.read.removeAllListeners.apply(this.read, arguments);
 };
 
 
