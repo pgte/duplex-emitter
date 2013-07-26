@@ -45,4 +45,27 @@ test('streaming things other than an array yields an error', function(t) {
   s.write('{"abc": 1}\n');
 });
 
+test('removeAllListeners works', function(t) {
+   var s = new PassThrough();
+
+  var emitter = DuplexEmitter(s);
+
+  var called;
+
+  emitter.on('ev1', function(a, b, c) {
+    if (called)
+      return t.fail('should have fired just once');
+
+    called = true;
+    emitter.removeAllListeners();
+  });
+
+  s.write('["ev1"]\n');
+  s.write('["ev1"]\n');
+
+  setTimeout(function () {
+    t.end();
+  }, 100);
+});
+
 function xtest() {};
