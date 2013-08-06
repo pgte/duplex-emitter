@@ -18,5 +18,6 @@ inherits(WriteEmitter, EventEmitter);
 
 WriteEmitter.prototype.emit = function emit() {
   var message = JSON.stringify(slice.apply(arguments)) + '\n';
-  this._stream.write(message);
+  if (this._stream.writable)
+    this._stream.write(message);
 };
