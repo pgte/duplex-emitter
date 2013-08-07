@@ -13,7 +13,7 @@ function DuplexEmitter(stream) {
   EventEmitter.call(this);
 
   this.read = this.readEmitter = ReadEmitter(stream);
-  this.write = this.writeEmtter = WriteEmitter(stream);
+  this.write = this.writeEmitter = WriteEmitter(stream);
 
   this.write.on('error', onError.bind(this));
 }
