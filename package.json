@@ -1,6 +1,6 @@
 {
   "name": "duplex-emitter",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Duplex Event Emitter",
   "main": "index.js",
   "scripts": {
@@ -18,6 +18,10 @@
     "remote"
   ],
   "author": "pgte",
+  "contributors": [
+    {"name": "Pedro Teixeira"},
+    {"name": "Igor Soarez"}
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/pgte/duplex-emitter/issues"
