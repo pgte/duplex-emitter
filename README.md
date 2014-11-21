@@ -7,6 +7,8 @@
 
 Turns a duplex stream into an event emitter.
 
+For instance, when you connect a TCP server and a TCP client using this, when the client emits, the event gets propagated to the server and vice-versa.
+
 ## Create
 
 ```javascript
